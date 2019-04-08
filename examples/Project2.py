@@ -329,8 +329,8 @@ def find_lane_pixels(img, nwindows = 9, margin = 100, minpix = 50):
 
     return leftx, lefty, rightx, righty, out_img
 
-left_fit = np.array([2.43257e-04, -3.02207980e-01,  3.254e+02])
-right_fit = np.array([2.7879348e-04, -3.43848953e-01,  1.1426170e+03])
+left_fit = np.array([2.57257e-04, -3.14207980e-01,  3.174e+02])
+right_fit = np.array([2.6479348e-04, -3.42848953e-01,  1.1616170e+03])
 
 def fit_poly_one(binary_warp):
     top_view, M_pers, un_W, un_M = transform_image(img)
