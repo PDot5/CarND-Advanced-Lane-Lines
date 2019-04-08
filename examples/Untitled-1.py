@@ -40,30 +40,59 @@ imgpoints = [] # 2d points in image plane.
 # Make a list of calibration images
 images = glob.glob('../camera_cal/calibration*.jpg')
 
-# Step through the list and search for chessboard corners
-for fname in images:
-    img = cv2.imread(fname)
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+def cal_undistort(img, objpoints, imgpoints):
+    
+    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img.shape[1:], None, None)
+    undist = cv2.undistort(img, mtx, dist, None, mtx)
 
-    # Find the chessboard corners
-    ret, corners = cv2.findChessboardCorners(gray, (9,6),None)
+    # Step through the list and search for chessboard corners
+    for fname in images:
+        img = cv2.imread(fname)
+        gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
-    # If found, add object points, image points
-    if ret == True:
-        objpoints.append(objp)
-        imgpoints.append(corners)
+        # Find the chessboard corners
+        ret, corners = cv2.findChessboardCorners(gray, (9,6),None)
 
-        # Draw and display the corners
-        img = cv2.drawChessboardCorners(img, (9,6), corners, ret)
-        cv2.imshow('img',img)
-        cv2.waitKey(500)
+        # If found, add object points, image points
+        if ret == True:
+                objpoints.append(objp)
+                imgpoints.append(corners)
 
-cv2.destroyAllWindows()
+                # Draw and display the corners
+                img = cv2.drawChessboardCorners(img, (9,6), corners, ret)
+                cv2.imshow('img',img)
+                cv2.waitKey(10)
+        
+        cv2.destroyAllWindows()   
+
+    return undist
+
+undistorted = cal_undistort(img, objpoints, imgpoints)
+        
+
+print('ok')
+print(objp.shape)
+print(corners.shape)
+
+img_size = (img.shape[1], img.shape[0])
+print(img_size)
+
+%matplotlib inline
+plt.figure(figsize=(10.,8))
+img = mpimg.imread("../camera_cal/calibration5.jpg")
+# Undistort using mtx and dist
+undist = cv2.undistort(img, mtx, dist, None, mtx)
+
+plt.subplot(2,2,1)
+plt.title('Original')
+fig = plt.imshow(img)
+
+plt.subplot(2,2,2)
+plt.title('Undistorted')
+fig = plt.imshow(undist)
 
 #%% [markdown]
-# ## And so on and so forth...
 
-#%%
 
 
 
